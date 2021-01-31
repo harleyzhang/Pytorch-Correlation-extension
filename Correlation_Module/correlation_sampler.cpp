@@ -26,7 +26,8 @@ std::vector<torch::Tensor> correlation_cpp_backward(
 
 #ifdef USE_CUDA
 
-#define CHECK_CUDA(x) TORCH_CHECK(x.type().is_cuda(), #x, " must be a CUDA tensor")
+//#define CHECK_CUDA(x) TORCH_CHECK(x.type().is_cuda(), #x, " must be a CUDA tensor")
+#define CHECK_CUDA(x) TORCH_CHECK(x.is_cuda(), #x, " must be a CUDA tensor")
 #define CHECK_CONTIGUOUS(x) TORCH_CHECK(x.is_contiguous(), #x, " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
@@ -59,7 +60,7 @@ torch::Tensor correlation_sample_forward(
     int padH, int padW,
     int dilation_patchH, int dilation_patchW,
     int dH, int dW) {
-  if (input1.type().is_cuda()){
+  if (input1.is_cuda()){
     CHECK_INPUT(input1);
     CHECK_INPUT(input2);
     
@@ -85,7 +86,7 @@ std::vector<torch::Tensor> correlation_sample_backward(
     size_t dilation_patchH, size_t dilation_patchW,
     size_t dH, size_t dW) {
 
-  if(grad_output.type().is_cuda()){
+  if(grad_output.is_cuda()){
     CHECK_INPUT(input1);
     CHECK_INPUT(input2);
     return correlation_cuda_backward(input1, input2, grad_output,
